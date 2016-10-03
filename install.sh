@@ -5,17 +5,20 @@ set -e -x
 INSTALL_DIR='/usr/local/lib'
 PRELOAD_CFG='/etc/ld.so.preload'
 LIB='libfsync-stub.so'
-DEST_FILE="$INSTALL_DIR/$LIB"
 
 [ -d "$INSTALL_DIR" ] || mkdir "$INSTALL_DIR"
 
-chmod 644 "$LIB"
-cp -f "$LIB" "${DEST_FILE}.copy"
-mv -f "${DEST_FILE}.copy" "$DEST_FILE"
+for arch in x86_64 i686; do
+  file="${LIB}.${arch}"
+  dest_file="$INSTALL_DIR/$file"
+  chmod 644 "$file"
+  cp -f "$file" "${dest_file}.copy"
+  mv -f "${dest_file}.copy" "$dest_file"
+done
 
-if ! [ -f "$PRELOAD_CFG" ] || ! grep -q "$DEST_FILE" "$PRELOAD_CFG"; then
+if ! [ -f "$PRELOAD_CFG" ] || ! grep -q "$INSTALL_DIR/$LIB.\$PLATFORM" "$PRELOAD_CFG"; then
   echo >> "$PRELOAD_CFG"
-  echo "$DEST_FILE" >> "$PRELOAD_CFG"
+  echo "$INSTALL_DIR/$LIB.\$PLATFORM" >> "$PRELOAD_CFG"
   echo "Installed"
 else
   echo "Already installed"
