@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e -x
+set -e
 
 INSTALL_DIR='/usr/local/lib'
 PRELOAD_CFG='/etc/ld.so.preload'
@@ -12,14 +12,12 @@ for arch in x86_64 i686; do
   file="${LIB}.${arch}"
   dest_file="$INSTALL_DIR/$file"
   chmod 644 "$file"
-  cp -f "$file" "${dest_file}.copy"
-  mv -f "${dest_file}.copy" "$dest_file"
+  cp -v -f "$file" "${dest_file}.copy"
+  mv -v -f "${dest_file}.copy" "$dest_file"
 done
 
 if ! [ -f "$PRELOAD_CFG" ] || ! grep -q "$INSTALL_DIR/$LIB.\$PLATFORM" "$PRELOAD_CFG"; then
   echo >> "$PRELOAD_CFG"
   echo "$INSTALL_DIR/$LIB.\$PLATFORM" >> "$PRELOAD_CFG"
-  echo "Installed"
-else
-  echo "Already installed"
+  echo "Updated $PRELOAD_CFG"
 fi
