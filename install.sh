@@ -6,7 +6,7 @@ INSTALL_DIR='/usr/local'
 PRELOAD_CFG='/etc/ld.so.preload'
 LIB='libfsync-stub.so'
 
-for arch in i386-linux-gnu x86_64-linux-gnu; do
+for arch in i386-linux-gnu x86_64-linux-gnu aarch64-linux-gnu; do
   file="$LIB.$arch"
   dest_dir="$INSTALL_DIR/lib/$arch"
   dest_file="$INSTALL_DIR/lib/$arch/$LIB"
